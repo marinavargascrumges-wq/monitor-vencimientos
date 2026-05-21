@@ -1,0 +1,32 @@
+{
+  "ecogas_20585235": {
+    "concepto": "Ecogas",
+    "descripcion": "Contenedores Azul - Juan D. Peron 347 Maipu",
+    "numero": "20585235",
+    "vto": "",
+    "monto": 0,
+    "monto_fmt": "$ 0",
+    "cobrado": true,
+    "nota": "No encontrada"
+  },
+  "ecogas_22110917": {
+    "concepto": "Ecogas",
+    "descripcion": "Fideicomiso R. Pena - Rodriguez Pena 2163 Local 01",
+    "numero": "22110917",
+    "vto": "",
+    "monto": 0,
+    "monto_fmt": "$ 0",
+    "cobrado": true,
+    "nota": "No encontrada"
+  },
+  "ecogas_20582268": {
+    "concepto": "Ecogas",
+    "descripcion": "Fideicomiso R. Pena - Rodriguez Pena 2125",
+    "numero": "20582268",
+    "vto": "",
+    "monto": 0,
+    "monto_fmt": "$ 0",
+    "cobrado": true,
+    "nota": "No encontrada"
+  }
+}

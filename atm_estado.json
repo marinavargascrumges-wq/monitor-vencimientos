@@ -1,0 +1,34 @@
+{
+  "Inmobiliario_07-055700_0": {
+    "concepto": "Inmobiliario",
+    "descripcion": "Padron 07-055700 Cuota 3",
+    "vto": "30/06/2026",
+    "monto": "$ 1.629.064",
+    "cobrado": false,
+    "padron": "07-055700"
+  },
+  "Inmobiliario_07-055700_1": {
+    "concepto": "Inmobiliario",
+    "descripcion": "Padron 07-055700 Cuota 4",
+    "vto": "31/08/2026",
+    "monto": "$ 1.629.064",
+    "cobrado": false,
+    "padron": "07-055700"
+  },
+  "Inmobiliario_07-055700_2": {
+    "concepto": "Inmobiliario",
+    "descripcion": "Padron 07-055700 Cuota 5",
+    "vto": "30/10/2026",
+    "monto": "$ 1.629.064",
+    "cobrado": false,
+    "padron": "07-055700"
+  },
+  "Inmobiliario_07-055700_3": {
+    "concepto": "Inmobiliario",
+    "descripcion": "Padron 07-055700 Cuota 6",
+    "vto": "30/12/2026",
+    "monto": "$ 1.629.064",
+    "cobrado": false,
+    "padron": "07-055700"
+  }
+}

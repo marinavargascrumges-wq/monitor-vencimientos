@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor de Vencimientos</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f5;color:#1a1a1a;padding:24px}
+.container{max-width:1100px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.header-title{font-size:20px;font-weight:500}
+.header-sub{font-size:13px;color:#666;margin-top:3px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.metric{background:white;border-radius:10px;padding:14px 16px;border:1px solid #e8e8e8}
+.metric-label{font-size:12px;color:#888;margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:500}
+.danger{color:#cc2200}.warning{color:#996600}.success{color:#1a7a3a}
+.controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.controls select,.controls input{padding:7px 10px;font-size:13px;border:1px solid #d0d0d0;border-radius:8px;background:white;height:36px}
+.controls input{min-width:180px}
+.tab-bar{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid #e8e8e8}
+.tab{padding:7px 16px;font-size:13px;cursor:pointer;border:none;background:none;color:#888;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab.active{color:#1a1a1a;border-bottom:2px solid #1a1a1a;font-weight:500}
+.table-wrap{background:white;border-radius:10px;border:1px solid #e8e8e8;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-weight:500;font-size:12px;color:#888;text-align:left;padding:10px 14px;border-bottom:1px solid #f0f0f0;white-space:nowrap}
+td{padding:10px 14px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafafa}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px}
+.b-danger{background:#fff0ee;color:#cc2200}
+.b-warning{background:#fffae6;color:#996600}
+.b-success{background:#edf7f0;color:#1a7a3a}
+.b-info{background:#e8f0fe;color:#1a56db}
+.b-gray{background:#f5f5f5;color:#666}
+.src-pill{font-size:10px;padding:2px 6px;border-radius:20px;font-weight:500;margin-left:5px;vertical-align:middle}
+.src-edemsa{background:#E1F5EE;color:#085041}
+.src-atm{background:#EEEDFE;color:#3C3489}
+.src-afip{background:#FAEEDA;color:#633806}
+.src-aysam{background:#E6F1FB;color:#0C447C}
+.src-ecogas{background:#EAF3DE;color:#27500A}
+.src-itc{background:#FDE8F0;color:#8B1A4A}
+.monto{text-align:right;font-variant-numeric:tabular-nums}
+.total-row td{font-weight:500;background:#fafafa;border-top:1px solid #e8e8e8}
+.empty{padding:32px;text-align:center;color:#999}
+.footer{margin-top:12px;font-size:12px;color:#bbb;text-align:right}
+.alert-banner{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:8px}
+.alert-danger{background:#fff0ee;color:#cc2200;border:1px solid #ffcccc}
+.alert-warning{background:#fffae6;color:#996600;border:1px solid #ffe58f}
+.alert-ok{background:#edf7f0;color:#1a7a3a;border:1px solid #c3e6cc}
+.btn{padding:7px 14px;font-size:13px;border-radius:8px;border:1px solid #d0d0d0;background:white;cursor:pointer}
+.btn:hover{background:#f5f5f5}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)};body{padding:12px}}
+
+.servicios{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.srv{background:white;border-radius:10px;padding:12px 14px;border:1px solid #e8e8e8;display:flex;align-items:center;gap:10px}
+.srv-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.srv-ok .srv-icon{background:#edf7f0;color:#1a7a3a}
+.srv-warn .srv-icon{background:#fffae6;color:#996600}
+.srv-danger .srv-icon{background:#fff0ee;color:#cc2200}
+.srv-off .srv-icon{background:#f5f5f5;color:#bbb}
+.srv-name{font-size:12px;font-weight:500;color:#444}
+.srv-status{font-size:11px;margin-top:2px}
+.srv-ok .srv-status{color:#1a7a3a}
+.srv-warn .srv-status{color:#996600}
+.srv-danger .srv-status{color:#cc2200}
+.srv-off .srv-status{color:#bbb}
+@media(max-width:700px){.servicios{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <div>
+    <div class="header-title">&#9889; Monitor de Vencimientos</div>
+    <div class="header-sub" id="ultima-consulta">Cargando datos...</div>
+  </div>
+  <button class="btn" onclick="location.reload()">&#8635; Recargar</button>
+</div>
+
+<div id="alert-container"></div>
+
+<div class="servicios" id="panel-servicios"></div>
+
+
+
+<div class="metrics">
+  <div class="metric"><div class="metric-label">Vencidas sin pagar</div><div class="metric-value danger" id="cnt-venc">—</div></div>
+  <div class="metric"><div class="metric-label">Próximas (5 días)</div><div class="metric-value warning" id="cnt-prox">—</div></div>
+  <div class="metric"><div class="metric-label">Pagadas reciente</div><div class="metric-value success" id="cnt-pag">—</div></div>
+  <div class="metric"><div class="metric-label">Total pendiente</div><div class="metric-value" id="total-pend" style="font-size:16px;padding-top:5px">—</div></div>
+</div>
+
+<div class="controls">
+  <select id="fil-fuente" onchange="render()">
+    <option value="">Todas las fuentes</option>
+    <option value="Edemsa">Edemsa</option>
+    <option value="ATM">ATM Mendoza</option>
+    <option value="Aysam">Aysam</option>
+    <option value="Ecogas">Ecogas</option>
+    <option value="ITC">ITC Internet</option>
+  </select>
+  <select id="fil-estado" onchange="render()">
+    <option value="">Todos los estados</option>
+    <option value="vencida">Vencidas</option>
+    <option value="proxima">Próximas</option>
+    <option value="pendiente">Pendientes</option>
+    <option value="pagada">Pagadas reciente</option>
+  </select>
+  <input type="text" id="fil-busca" placeholder="Buscar concepto o descripción..." oninput="render()">
+</div>
+
+<div class="tab-bar">
+  <button class="tab active" onclick="setTab('todos',this)">Todos</button>
+  <button class="tab" onclick="setTab('urgente',this)">Urgentes</button>
+  <button class="tab" onclick="setTab('pendiente',this)">Pendientes</button>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th>Concepto</th>
+      <th>Descripción</th>
+      <th>Vencimiento</th>
+      <th class="monto">Importe</th>
+      <th>Estado</th>
+      <th>Días</th>
+    </tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty" id="empty" style="display:none">Sin registros para los filtros seleccionados.</div>
+</div>
+
+<div class="footer" id="footer"></div>
+</div>
+
+<script>
+const ALERTA_DIAS = 5;
+let tabActual = 'todos';
+let DATOS = [];
+
+// Intenta leer los JSONs generados por los scripts Python
+async function cargarDatos() {
+  let edDatos = [], atmDatos = [];
+
+  // Leer edemsa_estado.json
+  try {
+    const r = await fetch('Edemsa/edemsa_estado.json');
+    const obj = await r.json();
+    edDatos = Object.values(obj).map(f => ({
+      fuente: 'Edemsa',
+      concepto: 'Edemsa',
+      desc: (f.nombre || '') + (f.nic ? ' (' + f.nic + ')' : ''),
+      vto: f.vto || '',
+      monto: parseFloat((f.monto||'0').toString().replace(/\./g,'').replace(',','.')),
+      cobrado: f.cobrado === true || f.cobrado === 'true',
+      recien: false,
+    }));
+  } catch(e) {}
+
+  // Leer aysam_estado.json
+  try {
+    const r = await fetch('Aysam/aysam_estado.json');
+    const obj = await r.json();
+    const ayDatos = Object.values(obj).map(f => ({
+      fuente: 'Aysam',
+      concepto: f.concepto || 'Aysam',
+      desc: f.descripcion || f.desc || '',
+      vto: f.vto || '',
+      monto: parseFloat(f.monto || 0) || 0,
+      cobrado: f.cobrado === true || f.cobrado === 'true',
+      recien: false,
+    }));
+    edDatos = [...edDatos, ...ayDatos];
+  } catch(e) {}
+
+  // Leer ecogas_estado.json
+  try {
+    const r = await fetch('Ecogas/ecogas_estado.json');
+    const obj = await r.json();
+    const ecDatos = Object.values(obj).map(f => ({
+      fuente: 'Ecogas',
+      concepto: f.concepto || 'Ecogas',
+      desc: f.descripcion || '',
+      vto: f.vto || '',
+      monto: parseFloat(f.monto || 0) || 0,
+      cobrado: f.cobrado === true || f.cobrado === 'true',
+      recien: false,
+    }));
+    edDatos = [...edDatos, ...ecDatos];
+  } catch(e) {}
+
+  // Leer atm_estado.json
+  try {
+    const r = await fetch('ATM/atm_estado.json');
+    const obj = await r.json();
+    atmDatos = Object.values(obj).map(f => ({
+      fuente: 'ATM',
+      concepto: f.concepto || 'ATM',
+      desc: f.descripcion || '',
+      vto: f.vto || '',
+      monto: parseFloat((f.monto||'0').toString().replace(/\$/g,'').replace(/\./g,'').replace(',','.').trim()) || 0,
+      cobrado: f.cobrado === true || f.cobrado === 'true',
+      recien: false,
+    }));
+  } catch(e) {}
+
+
+  // Leer itc_estado.json
+  try {
+    const r = await fetch('ITC/itc_estado.json');
+    const obj = await r.json();
+    const itcDatos = Object.values(obj).map(f => ({
+      fuente: 'ITC',
+      concepto: 'ITC Internet',
+      desc: f.nombre || f.numero || '',
+      vto: f.vto || '',
+      monto: parseFloat(f.monto||0) || 0,
+      cobrado: f.cobrado === true || f.cobrado === 'true',
+      recien: false,
+    }));
+    edDatos = [...edDatos, ...itcDatos];
+  } catch(e) {}
+
+  // Si no pudo leer los JSONs, usar datos de fallback
+  if (!edDatos.length && !atmDatos.length) { // fallback
+    DATOS = FALLBACK;
+    document.getElementById('ultima-consulta').textContent =
+      'Datos del ultimo reporte conocido (abri desde la carpeta Edemsa/ATM para datos en vivo)';
+  } else {
+    DATOS = [...edDatos, ...atmDatos];
+    document.getElementById('ultima-consulta').textContent =
+      'Datos actualizados · ' + new Date().toLocaleString('es-AR');
+  }
+  render();
+}
+
+const FALLBACK = [
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Dorrego L19 (3228299)',       vto:'18/05/2026',monto:483730,  cobrado:true, recien:true},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 17-18 (3228298)',      vto:'18/05/2026',monto:498357,  cobrado:true, recien:true},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Bomberos (3203326)',           vto:'18/05/2026',monto:417120,  cobrado:true, recien:true},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 23-24 (3211311)',      vto:'18/05/2026',monto:3152968, cobrado:true, recien:true},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Local Energe (2058905)',      vto:'06/05/2026',monto:28829,   cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Cumbar (3095476)',             vto:'06/05/2026',monto:71183,   cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 1 (3097494)',           vto:'06/05/2026',monto:320533,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Uber-Cargonet (3097495)',      vto:'06/05/2026',monto:154529,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'El Puerto (3113304)',          vto:'06/05/2026',monto:48615,   cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'BPA-Boart (3113305)',          vto:'06/05/2026',monto:172443,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Ingreso-Garita (3128085)',     vto:'06/05/2026',monto:33941,   cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 11-12 (3157212)',       vto:'06/05/2026',monto:490849,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 13-14 (3164777)',       vto:'06/05/2026',monto:308839,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 6-7-8 (3164778)',       vto:'06/05/2026',monto:341129,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 5 (3164783)',           vto:'06/05/2026',monto:866309,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 2 (3177291)',           vto:'06/05/2026',monto:284237,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Galpon 3-4-10 (3177292)',      vto:'06/05/2026',monto:310588,  cobrado:true, recien:false},
+  {fuente:'Edemsa',concepto:'Edemsa',desc:'Dorrego Bomba (3228468)',      vto:'06/05/2026',monto:465364,  cobrado:true, recien:false},
+  {fuente:'ATM',concepto:'Inmobiliario',desc:'Padron 07-055700 Cuota 3', vto:'30/06/2026',monto:1629064, cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Inmobiliario',desc:'Padron 07-055700 Cuota 4', vto:'31/08/2026',monto:1629064, cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Inmobiliario',desc:'Padron 07-055700 Cuota 5', vto:'30/10/2026',monto:1629064, cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Inmobiliario',desc:'Padron 07-055700 Cuota 6', vto:'30/12/2026',monto:1629064, cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 810700 Cuota 3',            vto:'17/06/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 810700 Cuota 4',            vto:'17/07/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 810700 Cuota 5',            vto:'17/08/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 810700 Cuota 6',            vto:'17/09/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 666100 Cuota 4',            vto:'16/06/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 666100 Cuota 5',            vto:'16/07/2026',monto:879249,  cobrado:false,recien:false},
+  {fuente:'ATM',concepto:'Sellos',desc:'Plan 666100 Cuota 6',            vto:'16/08/2026',monto:879249,  cobrado:false,recien:false},
+  // Ecogas - 3 cuentas sin deuda (estado actual)
+  {fuente:'Ecogas',concepto:'Ecogas',desc:'Cuenta 20585235 - Contenedores Azul Maipu',vto:'',monto:0,cobrado:true,recien:false},
+  {fuente:'Ecogas',concepto:'Ecogas',desc:'Cuenta 22110917 - Fideicomiso R. Pena Local 01',vto:'',monto:0,cobrado:true,recien:false},
+  {fuente:'Ecogas',concepto:'Ecogas',desc:'Cuenta 20582268 - Fideicomiso R. Pena 2125',vto:'',monto:0,cobrado:true,recien:false},
+  // Aysam - 4 facturas cuenta PALUMBO MARGARITA
+  {fuente:'Aysam',concepto:'Aysam',desc:'NC 165-0200156-000-9 | 02/2026 Cta 1 (menor)',vto:'01/06/2026',monto:297734,cobrado:false,recien:false},
+  {fuente:'Aysam',concepto:'Aysam',desc:'NC 165-0200156-000-9 | 02/2026 Cta 1 (mayor)',vto:'01/06/2026',monto:986913,cobrado:false,recien:false},
+  {fuente:'Aysam',concepto:'Aysam',desc:'NC 165-0200156-000-9 | 02/2026 Cta 2 (menor)',vto:'02/07/2026',monto:297734,cobrado:false,recien:false},
+  {fuente:'Aysam',concepto:'Aysam',desc:'NC 165-0200156-000-9 | 02/2026 Cta 2 (mayor)',vto:'02/07/2026',monto:986913,cobrado:false,recien:false},
+];
+
+function parseFecha(s){
+  if(!s) return new Date(9999,0,1);
+  const [d,m,y]=s.split('/');
+  return new Date(+y,+m-1,+d);
+}
+function diasHasta(s){
+  const hoy=new Date(); hoy.setHours(0,0,0,0);
+  return Math.round((parseFecha(s)-hoy)/86400000);
+}
+function fmtMonto(v){
+  return '$ '+Math.round(v||0).toLocaleString('es-AR');
+}
+function estadoInfo(f){
+  if(f.cobrado&&f.recien) return {label:'Pagada reciente',cls:'b-success',key:'pagada'};
+  if(f.cobrado)           return {label:'Al dia',cls:'b-gray',key:'ok'};
+  const d=diasHasta(f.vto);
+  if(d<0)       return {label:'Vencida',cls:'b-danger',key:'vencida'};
+  if(d<=ALERTA_DIAS) return {label:'Proxima',cls:'b-warning',key:'proxima'};
+  return {label:'Pendiente',cls:'b-info',key:'pendiente'};
+}
+function srcClass(f){
+  if(f==='Edemsa') return 'src-edemsa';
+  if(f==='ATM')    return 'src-atm';
+  if(f==='Aysam')  return 'src-aysam';
+  if(f==='Ecogas') return 'src-ecogas';
+  if(f==='ITC')    return 'src-itc';
+  return 'src-afip';
+}
+
+
+const SERVICIOS_CONFIG = [
+  { key: 'Edemsa',  label: 'Edemsa',       icon: '⚡' },
+  { key: 'ATM',     label: 'ATM',           icon: '🏛' },
+  { key: 'Aysam',   label: 'Aysam',         icon: '💧' },
+  { key: 'Ecogas',  label: 'Ecogas',        icon: '🔥' },
+  { key: 'ITC',     label: 'ITC Internet',  icon: '🌐' },
+];
+
+function renderServicios() {
+  const panel = document.getElementById('panel-servicios');
+  if (!panel) return;
+
+  const hoy = new Date(); hoy.setHours(0,0,0,0);
+  const mesActual = hoy.getMonth();
+  const anioActual = hoy.getFullYear();
+
+  function esteOAnteriorMes(vtoStr) {
+    if (!vtoStr) return false;
+    const f = parseFecha(vtoStr);
+    return f.getFullYear() < anioActual ||
+           (f.getFullYear() === anioActual && f.getMonth() <= mesActual);
+  }
+
+  const cards = SERVICIOS_CONFIG.map(srv => {
+    const items = DATOS.filter(f => f.fuente === srv.key);
+    if (!items.length) {
+      return `<div class="srv srv-off">
+        <div class="srv-icon">${srv.icon}</div>
+        <div><div class="srv-name">${srv.label}</div><div class="srv-status">Sin datos</div></div>
+      </div>`;
+    }
+
+    // Solo considerar facturas de este mes o anteriores para el estado del panel
+    const relevantes = items.filter(f => esteOAnteriorMes(f.vto) || (!f.vto && !f.cobrado));
+    const vencidas  = relevantes.filter(f => !f.cobrado && f.vto && diasHasta(f.vto) < 0).length;
+    const esteMesPend = relevantes.filter(f => !f.cobrado && f.vto && diasHasta(f.vto) >= 0).length;
+
+    let cls, icon, status;
+    if (vencidas > 0) {
+      cls = 'srv-danger'; icon = '⛔';
+      status = `${vencidas} vencida${vencidas>1?'s':''}`;
+    } else if (esteMesPend > 0) {
+      // Hay pendientes de este mes sin vencer
+      const proxima = relevantes.filter(f=>!f.cobrado&&f.vto&&diasHasta(f.vto)>=0)
+        .sort((a,b)=>parseFecha(a.vto)-parseFecha(b.vto))[0];
+      const d = proxima ? diasHasta(proxima.vto) : null;
+      cls = 'srv-warn'; icon = '🕐';
+      status = d !== null ? (d === 0 ? 'Vence hoy' : `Vence en ${d}d`) : `${esteMesPend} pendiente${esteMesPend>1?'s':''}`;
+    } else {
+      cls = 'srv-ok'; icon = '✓';
+      status = 'Al día';
+    }
+
+    return `<div class="srv ${cls}" style="cursor:pointer" onclick="filtrarServicio('${srv.key}')">
+      <div class="srv-icon">${icon}</div>
+      <div><div class="srv-name">${srv.label}</div><div class="srv-status">${status}</div></div>
+    </div>`;
+  });
+  panel.innerHTML = cards.join('');
+}
+
+function filtrarServicio(key) {
+  document.getElementById('fil-fuente').value = key;
+  setTab('todos', document.querySelector('.tab'));
+  render();
+}
+
+function setTab(t,el){
+  tabActual=t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+
+function render(){
+  const ff=document.getElementById('fil-fuente').value;
+  const fe=document.getElementById('fil-estado').value;
+  const fb=document.getElementById('fil-busca').value.toLowerCase();
+
+  let venc=0,prox=0,pag=0,totalPend=0;
+  DATOS.forEach(f=>{
+    const ei=estadoInfo(f);
+    if(ei.key==='vencida') venc++;
+    if(ei.key==='proxima') prox++;
+    if(f.recien) pag++;
+    if(!f.cobrado) totalPend+=f.monto||0;
+  });
+
+  document.getElementById('cnt-venc').textContent=venc;
+  document.getElementById('cnt-prox').textContent=prox;
+  document.getElementById('cnt-pag').textContent=pag;
+  document.getElementById('total-pend').textContent=fmtMonto(totalPend);
+
+  const alertEl=document.getElementById('alert-container');
+  if(venc>0){
+    alertEl.innerHTML=`<div class="alert-banner alert-danger">&#9888; Hay ${venc} factura${venc>1?'s':''} vencida${venc>1?'s':''} sin pagar.</div>`;
+  } else if(prox>0){
+    alertEl.innerHTML=`<div class="alert-banner alert-warning">&#8987; ${prox} vencimiento${prox>1?'s':''} en los proximos ${ALERTA_DIAS} dias.</div>`;
+  } else {
+    alertEl.innerHTML='<div class="alert-banner alert-ok">&#10003; Todo al dia. Sin vencimientos urgentes.</div>';
+  }
+
+  let filtered=DATOS.filter(f=>{
+    const ei=estadoInfo(f);
+    if(ff && f.fuente!==ff) return false;
+    if(fe && ei.key!==fe) return false;
+    if(fb && !f.concepto.toLowerCase().includes(fb) && !f.desc.toLowerCase().includes(fb)) return false;
+    if(tabActual==='urgente' && ei.key!=='vencida' && ei.key!=='proxima') return false;
+    if(tabActual==='pendiente' && f.cobrado) return false;
+    return true;
+  }).sort((a,b)=>{
+    const ord={vencida:0,proxima:1,pendiente:2,pagada:3,ok:4};
+    const ea=estadoInfo(a),eb=estadoInfo(b);
+    return (ord[ea.key]||4)-(ord[eb.key]||4)||parseFecha(a.vto)-parseFecha(b.vto);
+  });
+
+  const tbody=document.getElementById('tbody');
+  const empty=document.getElementById('empty');
+  if(!filtered.length){tbody.innerHTML='';empty.style.display='';return;}
+  empty.style.display='none';
+
+  let total=0;
+  const rows=filtered.map(f=>{
+    const ei=estadoInfo(f);
+    const d=diasHasta(f.vto);
+    const diasLabel=f.cobrado?'—':(d<0?`hace ${Math.abs(d)}d`:(d===0?'hoy':`en ${d}d`));
+    if(!f.cobrado) total+=(f.monto||0);
+    return `<tr>
+      <td style="font-weight:500">${f.concepto}<span class="src-pill ${srcClass(f.fuente)}">${f.fuente}</span></td>
+      <td style="color:#666;font-size:12px">${f.desc}</td>
+      <td>${f.vto||'—'}</td>
+      <td class="monto">${fmtMonto(f.monto)}</td>
+      <td><span class="badge ${ei.cls}">${ei.label}</span></td>
+      <td style="color:#999;font-size:12px">${diasLabel}</td>
+    </tr>`;
+  });
+
+  if(total>0){
+    rows.push(`<tr class="total-row"><td colspan="3"></td><td class="monto">${fmtMonto(total)}</td><td colspan="2" style="font-size:12px;color:#888">total pendiente</td></tr>`);
+  }
+  tbody.innerHTML=rows.join('');
+  renderServicios();
+  document.getElementById('footer').textContent='Monitor de Vencimientos · '+new Date().toLocaleString('es-AR');
+}
+
+cargarDatos();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "aysam_300836003": {
+    "concepto": "Aysam",
+    "descripcion": "NC 165-0200156-000-9 | 02/2026 Cta 1",
+    "vto": "01/06/2026",
+    "monto": 297734.39,
+    "monto_fmt": "$ 297.734",
+    "cobrado": false,
+    "vencida": false,
+    "numero": "300836003",
+    "periodo": "02/2026 Cta 1"
+  },
+  "aysam_300836004": {
+    "concepto": "Aysam",
+    "descripcion": "NC 165-0200156-000-9 | 02/2026 Cta 1",
+    "vto": "01/06/2026",
+    "monto": 986912.91,
+    "monto_fmt": "$ 986.913",
+    "cobrado": false,
+    "vencida": false,
+    "numero": "300836004",
+    "periodo": "02/2026 Cta 1"
+  }
+}

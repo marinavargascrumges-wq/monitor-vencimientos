@@ -1,0 +1,200 @@
+{
+  "3164777_2209747": {
+    "nic": "3164777",
+    "nombre": "Galpon 13-14",
+    "nro_fac": "2209747",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 617678.0,
+    "cobrado": true
+  },
+  "3177291_2209793": {
+    "nic": "3177291",
+    "nombre": "Galpon 2",
+    "nro_fac": "2209793",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 568474.0,
+    "cobrado": true
+  },
+  "3228468_2209792": {
+    "nic": "3228468",
+    "nombre": "Dorrego Bomba",
+    "nro_fac": "2209792",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 930728.0,
+    "cobrado": true
+  },
+  "3157212_2209748": {
+    "nic": "3157212",
+    "nombre": "Galpon 11-12",
+    "nro_fac": "2209748",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 981697.0,
+    "cobrado": true
+  },
+  "3164778_2209581": {
+    "nic": "3164778",
+    "nombre": "Galpon 6-7-8",
+    "nro_fac": "2209581",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 682257.0,
+    "cobrado": true
+  },
+  "3164783_2209582": {
+    "nic": "3164783",
+    "nombre": "Galpon 5",
+    "nro_fac": "2209582",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 1732618.0,
+    "cobrado": true
+  },
+  "3177292_2209794": {
+    "nic": "3177292",
+    "nombre": "Galpon 3-4-10",
+    "nro_fac": "2209794",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 621175.0,
+    "cobrado": true
+  },
+  "3097495_2208940": {
+    "nic": "3097495",
+    "nombre": "Uber-Cargonet-SPT",
+    "nro_fac": "2208940",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 309058.0,
+    "cobrado": true
+  },
+  "3113304_31779861": {
+    "nic": "3113304",
+    "nombre": "El Puerto",
+    "nro_fac": "31779861",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 97229.0,
+    "cobrado": true
+  },
+  "3095476_2208991": {
+    "nic": "3095476",
+    "nombre": "Cumbar",
+    "nro_fac": "2208991",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 142365.0,
+    "cobrado": true
+  },
+  "3128085_2208823": {
+    "nic": "3128085",
+    "nombre": "Ingreso-Garita",
+    "nro_fac": "2208823",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 67882.0,
+    "cobrado": true
+  },
+  "2058905_2208989": {
+    "nic": "2058905",
+    "nombre": "Local Energe",
+    "nro_fac": "2208989",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 57658.0,
+    "cobrado": true
+  },
+  "3097494_2208992": {
+    "nic": "3097494",
+    "nombre": "Galpon 1",
+    "nro_fac": "2208992",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 641065.0,
+    "cobrado": true
+  },
+  "3113305_2208990": {
+    "nic": "3113305",
+    "nombre": "BPA-Boart",
+    "nro_fac": "2208990",
+    "periodo": "022026",
+    "vto": "06/04/2026",
+    "monto": 344886.0,
+    "cobrado": true
+  },
+  "3211311_2214533": {
+    "nic": "3211311",
+    "nombre": "Galpon 23-24",
+    "nro_fac": "2214533",
+    "periodo": "042026",
+    "vto": "14/04/2026",
+    "monto": 2480319.0,
+    "cobrado": true
+  },
+  "3228299_2215006": {
+    "nic": "3228299",
+    "nombre": "Dorrego L19",
+    "nro_fac": "2215006",
+    "periodo": "042026",
+    "vto": "14/04/2026",
+    "monto": 507270.0,
+    "cobrado": true
+  },
+  "3228298_2215005": {
+    "nic": "3228298",
+    "nombre": "Galpon 17-18",
+    "nro_fac": "2215005",
+    "periodo": "042026",
+    "vto": "14/04/2026",
+    "monto": 612025.0,
+    "cobrado": true
+  },
+  "3203326_2216505": {
+    "nic": "3203326",
+    "nombre": "Bomberos",
+    "nro_fac": "2216505",
+    "periodo": "042026",
+    "vto": "20/04/2026",
+    "monto": 292263.0,
+    "cobrado": true
+  },
+  "3228299_2234864": {
+    "nic": "3228299",
+    "nombre": "Dorrego L19",
+    "nro_fac": "2234864",
+    "periodo": "052026",
+    "vto": "18/05/2026",
+    "monto": 483730.0,
+    "cobrado": true
+  },
+  "3228298_2234863": {
+    "nic": "3228298",
+    "nombre": "Galpon 17-18",
+    "nro_fac": "2234863",
+    "periodo": "052026",
+    "vto": "18/05/2026",
+    "monto": 498357.0,
+    "cobrado": true
+  },
+  "3203326_2234862": {
+    "nic": "3203326",
+    "nombre": "Bomberos",
+    "nro_fac": "2234862",
+    "periodo": "052026",
+    "vto": "18/05/2026",
+    "monto": 417120.0,
+    "cobrado": true
+  },
+  "3211311_2234302": {
+    "nic": "3211311",
+    "nombre": "Galpon 23-24",
+    "nro_fac": "2234302",
+    "periodo": "052026",
+    "vto": "18/05/2026",
+    "monto": 3152968.0,
+    "cobrado": true
+  }
+}
