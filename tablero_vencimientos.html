@@ -147,7 +147,7 @@ async function cargarDatos() {
 
   // Leer edemsa_estado.json
   try {
-    const r = await fetch('Edemsa/edemsa_estado.json');
+    const r = await fetch('Edemsa/edemsa_estado.json').catch(()=>fetch('edemsa_estado.json'));
     const obj = await r.json();
     edDatos = Object.values(obj).map(f => ({
       fuente: 'Edemsa',
@@ -162,7 +162,7 @@ async function cargarDatos() {
 
   // Leer aysam_estado.json
   try {
-    const r = await fetch('Aysam/aysam_estado.json');
+    const r = await fetch('Aysam/aysam_estado.json').catch(()=>fetch('aysam_estado.json'));
     const obj = await r.json();
     const ayDatos = Object.values(obj).map(f => ({
       fuente: 'Aysam',
@@ -178,7 +178,7 @@ async function cargarDatos() {
 
   // Leer ecogas_estado.json
   try {
-    const r = await fetch('Ecogas/ecogas_estado.json');
+    const r = await fetch('Ecogas/ecogas_estado.json').catch(()=>fetch('ecogas_estado.json'));
     const obj = await r.json();
     const ecDatos = Object.values(obj).map(f => ({
       fuente: 'Ecogas',
@@ -194,7 +194,7 @@ async function cargarDatos() {
 
   // Leer atm_estado.json
   try {
-    const r = await fetch('ATM/atm_estado.json');
+    const r = await fetch('ATM/atm_estado.json').catch(()=>fetch('atm_estado.json'));
     const obj = await r.json();
     atmDatos = Object.values(obj).map(f => ({
       fuente: 'ATM',
@@ -210,7 +210,7 @@ async function cargarDatos() {
 
   // Leer itc_estado.json
   try {
-    const r = await fetch('ITC/itc_estado.json');
+    const r = await fetch('ITC/itc_estado.json').catch(()=>fetch('itc_estado.json'));
     const obj = await r.json();
     const itcDatos = Object.values(obj).map(f => ({
       fuente: 'ITC',
